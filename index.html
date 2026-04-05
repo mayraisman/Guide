@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>המדריך לבניית סוכני AI</title>
+  <style>
+    :root {
+      --page: #f3f0ea;
+      --paper: #fcfbf8;
+      --ink: #171717;
+      --muted: #5f5a53;
+      --line: #d9d1c7;
+      --line-strong: #b7ab9d;
+      --accent: #b14f2b;
+      --accent-soft: #f1e3da;
+      --max-width: 980px;
+      --radius: 22px;
+      --shadow: 0 10px 30px rgba(30, 24, 16, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", "Arial", sans-serif;
+      line-height: 1.8;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .page {
+      width: min(calc(100% - 28px), var(--max-width));
+      margin: 20px auto 48px;
+    }
+
+    .sheet {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      padding: 42px 40px 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-mark {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      width: 96px;
+      max-width: 18vw;
+      opacity: 0.92;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .kicker {
+      display: inline-block;
+      margin-bottom: 18px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 4.2vw, 4.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subhead {
+      margin: 16px 0 0;
+      max-width: 28ch;
+      font-size: clamp(1.18rem, 1.8vw, 1.5rem);
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .source-line {
+      margin: 22px 0 0;
+      font-size: 1.06rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .lead {
+      margin: 28px 0 0;
+      max-width: 58ch;
+      font-size: 1.16rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 800;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--ink);
+      color: #fff;
+      border: 1px solid var(--ink);
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+    }
+
+    .author-panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .portrait {
+      aspect-ratio: 4 / 5;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #f6f2eb;
+      overflow: hidden;
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .author-panel h2 {
+      margin: 16px 0 8px;
+      font-size: 1.45rem;
+      line-height: 1.35;
+    }
+
+    .author-panel p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .author-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .author-tags span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .content {
+      padding: 0 40px 40px;
+    }
+
+    .intro {
+      padding: 26px 0 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .intro p {
+      margin: 0;
+      font-size: 1.08rem;
+      color: var(--muted);
+    }
+
+    .intro .button {
+      margin-top: 18px;
+    }
+
+    .chapter {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .chapter:last-of-type {
+      border-bottom: 0;
+    }
+
+    .chapter-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .chapter h3 {
+      margin: 0 0 16px;
+      font-size: clamp(1.7rem, 2.5vw, 2.25rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .chapter p {
+      margin: 0;
+      font-size: 1.12rem;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .box {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .box h4 {
+      margin: 0 0 10px;
+      font-size: 1.22rem;
+    }
+
+    .box p {
+      margin: 0;
+      font-size: 1.04rem;
+      color: var(--muted);
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+      align-items: center;
+    }
+
+    .flow-item {
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 1.28rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .step {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .step p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .list {
+      margin-top: 18px;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .list li {
+      padding: 14px 16px;
+      border-right: 3px solid var(--accent);
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 1.04rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .timeline {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .timeline-item span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.96rem;
+      font-weight: 800;
+    }
+
+    .timeline-item p {
+      margin: 0;
+      font-size: 1.04rem;
+    }
+
+    .callout {
+      margin: 34px 0;
+      padding: 24px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line-strong);
+    }
+
+    .callout h3 {
+      margin: 0 0 10px;
+      font-size: 1.7rem;
+      line-height: 1.3;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 1.08rem;
+      color: var(--muted);
+    }
+
+    .callout .button {
+      margin-top: 18px;
+    }
+
+    .summary {
+      padding: 34px 0 6px;
+    }
+
+    .summary h3 {
+      margin: 0 0 16px;
+      font-size: clamp(1.9rem, 2.8vw, 2.6rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .summary p {
+      margin: 0 0 14px;
+      font-size: 1.12rem;
+    }
+
+    .copyright {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .compare,
+      .process,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(calc(100% - 16px), var(--max-width));
+        margin: 8px auto 24px;
+      }
+
+      .hero,
+      .content {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .hero {
+        padding-top: 26px;
+        padding-bottom: 26px;
+      }
+
+      .brand-mark {
+        position: static;
+        width: 82px;
+        margin-bottom: 18px;
+      }
+
+      .sheet {
+        border-radius: 22px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2.3rem;
+      }
+
+      .chapter p,
+      .summary p,
+      .lead,
+      .source-line {
+        font-size: 1.04rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="sheet">
+      <header class="hero">
+        <a class="brand-mark" href="#guide" aria-label="ScaleUp">
+          <img src="./לוגו.jpeg" alt="ScaleUp logo">
+        </a>
+        <div class="kicker">מדריך פרקטי לעסקים שרוצים להפוך AI למערכת עבודה</div>
+        <div class="hero-grid">
+          <div>
+            <h1>המדריך לבניית סוכני AI</h1>
+            <p class="subhead">מה OpenAI באמת לימדו אותנו על המעבר ממודל לכלי עבודה שמנהל תהליכים</p>
+            <p class="source-line">
+              מאת מאי רייזמן, ScaleUp. מבוסס על מאמרם של Bo Xu, Danny Zhang ו-Rohit Arunachalam מ-OpenAI.
+            </p>
+            <p class="lead">
+              רוב העסקים עדיין עובדים עם AI ברמת ה"כלי". זה עוזר, אבל זה לא באמת
+              משנה את צורת העבודה. השינוי האמיתי קורה כשעוברים ממענה נקודתי למערכת
+              שיודעת להבין מטרה, לבצע צעדים, לבדוק תוצאה ולהמשיך הלאה.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0ppggGsyTUlEsBGauiMAHEbJ03BSY3Aseb-9B-J_g85v7uUPdTpGXkxPMwEuAtPF0JqB00ywre" target="_blank" rel="noreferrer">לקביעת שיחת היכרות בחינם</a>
+              <a class="button button-secondary" href="#guide">לקריאת המדריך</a>
+            </div>
+          </div>
+
+          <aside class="author-panel">
+            <div class="portrait">
+              <img src="./אני.jpeg" alt="מאי רייזמן">
+            </div>
+            <h2>מאי רייזמן</h2>
+            <p>
+              אני מאמין שהעתיד של AI בעסקים הוא לא בעוד כלי שיודע לענות מהר יותר,
+              אלא במערכות עבודה חכמות שיודעות להזיז תהליכים קדימה.
+            </p>
+            <p>
+              העשייה שלי מתמקדת בלקחת רעיונות, תהליכים ואתגרים עסקיים ולהפוך אותם
+              לסוכני AI, אוטומציות ותשתיות שעובדות בפועל מהאסטרטגיה והאפיון ועד ההטמעה.
+            </p>
+            <p>
+              את המדריך הזה כתבתי כדי להנגיש בעברית את המעבר המשמעותי שאנחנו עושים
+              היום: ממודלים שמבצעים משימות, לסוכנים שמנהלים תהליכים שלמים.
+            </p>
+            <div class="author-tags">
+              <span>ScaleUp</span>
+              <span>AI לעסקים</span>
+              <span>מערכות חכמות</span>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <div class="content" id="guide">
+        <section class="intro">
+          <p>
+            המדריך הזה נועד לבעלי עסקים, מנכ"לים ומנהלי צוותים שרוצים להבין לא רק
+            איך להשתמש ב-AI, אלא איך להפוך תהליך עסקי שלם למערכת חכמה שעובדת בשבילם.
+          </p>
+          <a class="button button-secondary" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0ppggGsyTUlEsBGauiMAHEbJ03BSY3Aseb-9B-J_g85v7uUPdTpGXkxPMwEuAtPF0JqB00ywre" target="_blank" rel="noreferrer">בוא/י נדבר על העסק שלך</a>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פתיחה</span>
+          <h3>מה OpenAI באמת לימדו אותנו על המעבר ממודל לסוכן</h3>
+          <p>
+            בשנים האחרונות רוב העסקים עובדים עם AI ברמת ה"כלי". אבל זה לא באמת משנה
+            את צורת העבודה. המעבר האמיתי שקורה עכשיו הוא לא ממודל טוב יותר למודל
+            חכם יותר, אלא מכלי לסוכן. זה בדיוק הרעיון ש-OpenAI פרסמו במאמר העומק שלהם
+            על Responses API וסביבת מחשב לסוכנים. המשמעות פשוטה: AI כבר לא רק עונה.
+            AI מתחיל לנהל תהליכי עבודה שלמים.
+          </p>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 1</span>
+          <h3>מה ההבדל בין מודל לסוכן?</h3>
+          <div class="compare">
+            <div class="box">
+              <h4>מודל</h4>
+              <p>
+                מודל מבצע משימה נקודתית. לדוגמה: כתיבת פוסט, סיכום פגישה, תרגום או
+                ניסוח מייל. הוא מגיב למה שמבקשים ממנו.
+              </p>
+            </div>
+            <div class="box">
+              <h4>סוכן</h4>
+              <p>
+                סוכן מנהל תהליך. הוא יודע להבין מטרה, לפרק אותה לשלבים, לבצע פעולות,
+                לבדוק תוצאות ולהמשיך לשלב הבא.
+              </p>
+            </div>
+          </div>
+
+          <div class="flow" aria-label="דוגמת תהליך סוכן">
+            <div class="flow-item">דוח שבועי</div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-item">עדכון CRM</div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-item">שליחת תזכורת</div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-item">בדיקת תגובה</div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-item">שליחת פולואפ</div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-item">לקוח השאיר ליד</div>
+          </div>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 2</span>
+          <h3>הלולאה שמפעילה סוכן</h3>
+          <p>
+            הבסיס של כל סוכן הוא לולאת עבודה. במילים פשוטות:
+            <strong>Input → Action → Check → Next Step</strong>.
+            לא פעולה אחת, אלא שרשרת החלטות.
+          </p>
+          <div class="process">
+            <div class="step">
+              <strong>1. קלט</strong>
+              <p>הסוכן מקבל אירוע או מטרה: ליד חדש, לקוח שלא ענה 48 שעות, או פגישה שהסתיימה.</p>
+            </div>
+            <div class="step">
+              <strong>2. פעולה</strong>
+              <p>הוא שולח הודעה, שואב נתונים, יוצר מסמך או מפעיל API.</p>
+            </div>
+            <div class="step">
+              <strong>3. בדיקה</strong>
+              <p>הוא בודק מה קרה: האם הייתה תגובה, האם נוצר קובץ, האם נקבעה שיחה.</p>
+            </div>
+            <div class="step">
+              <strong>4. המשך</strong>
+              <p>הוא מחליט מה לעשות עכשיו וממשיך לשלב הבא בהתאם לתוצאה.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 3</span>
+          <h3>זיכרון וקונטקסט</h3>
+          <p>
+            אחד הדברים החשובים ביותר שסוכן צריך הוא זיכרון עבודה. לא רק מה המשתמש
+            כתב עכשיו, אלא גם מה קרה בשלב הקודם, מה כבר נשלח, מה הסטטוס ומה הוחלט.
+          </p>
+          <ul class="list">
+            <li>לקוח קיבל הצעת מחיר ביום ראשון.</li>
+            <li>הסוכן צריך לזכור את זה גם ביום שלישי.</li>
+            <li>אחרת הוא יתנהג כמו כלי חד-פעמי במקום כמו מערכת.</li>
+          </ul>
+        </section>
+
+        <section class="callout">
+          <h3>כאן רוב העסקים מגלים שהבעיה היא לא עוד כלי, אלא תהליך שלא נבנה נכון.</h3>
+          <p>
+            אם יש אצלך בעסק תהליך שחוזר על עצמו שוב ושוב, אפשר למפות אותו יחד ולהבין
+            איך הופכים אותו למערכת חכמה ולא לעוד ניסיון נקודתי עם AI.
+          </p>
+          <a class="button button-primary" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0ppggGsyTUlEsBGauiMAHEbJ03BSY3Aseb-9B-J_g85v7uUPdTpGXkxPMwEuAtPF0JqB00ywre" target="_blank" rel="noreferrer">לקביעת שיחת היכרות בחינם</a>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 4</span>
+          <h3>Skills</h3>
+          <p>
+            אחד הרעיונות החזקים ביותר במאמר הוא Skills. במילים פשוטות: תבניות פעולה
+            מוכנות מראש. במקום להמציא כל פעם מחדש, הסוכן מפעיל skill.
+          </p>
+          <div class="grid-3">
+            <div class="box">
+              <h4>Skill: ליד חדש</h4>
+              <p>שליחת הודעת פתיחה, תיעוד במערכת, ותזכורת אחרי 24 שעות.</p>
+            </div>
+            <div class="box">
+              <h4>Skill: סיכום פגישה</h4>
+              <p>תמלול, סיכום, משימות ומייל follow-up.</p>
+            </div>
+            <div class="box">
+              <h4>Skill: תוכן</h4>
+              <p>רעיון, כתיבה, התאמה לפלטפורמה ו-CTA.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 5</span>
+          <h3>תוצרים אמיתיים, לא רק תשובות</h3>
+          <p>
+            AI לא צריך רק לענות. הוא צריך לייצר תוצרים אמיתיים שאפשר לעבוד איתם.
+            כאן AI מפסיק להיות עוזר טקסטואלי והופך לחלק מהתשתית העסקית.
+          </p>
+          <div class="grid-3">
+            <div class="box"><h4>PDF</h4><p>מסמך מסודר ללקוח, לצוות או להנהלה.</p></div>
+            <div class="box"><h4>דוח</h4><p>תמונת מצב שוטפת עם מסקנות ברורות.</p></div>
+            <div class="box"><h4>טבלת לידים</h4><p>מעקב מסודר שמתחבר לפעולות הבאות.</p></div>
+            <div class="box"><h4>הצעת מחיר</h4><p>טיוטה שנבנית אוטומטית על בסיס נתונים.</p></div>
+            <div class="box"><h4>גיליון מעקב</h4><p>ניהול סטטוסים, משימות ודדליינים.</p></div>
+            <div class="box"><h4>מסמך משימות</h4><p>תוצר פנימי שעוזר להניע ביצוע אמיתי.</p></div>
+          </div>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 6</span>
+          <h3>איך זה נראה בעסק אמיתי</h3>
+          <p>
+            הנה דוגמה פשוטה לסוכן לידים. מישהו השאיר פרטים, ומאותו רגע המערכת מתחילה
+            לעבוד בצורה עקבית, מהירה ומסודרת.
+          </p>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span>01</span>
+              <p>שולח הודעת WhatsApp ברגע שנכנס ליד.</p>
+            </div>
+            <div class="timeline-item">
+              <span>02</span>
+              <p>מסווג את סוג הליד לפי מקור, צורך או רמת דחיפות.</p>
+            </div>
+            <div class="timeline-item">
+              <span>03</span>
+              <p>בודק זמינות ביומן ושולח לינק לקביעת שיחה.</p>
+            </div>
+            <div class="timeline-item">
+              <span>04</span>
+              <p>מזכיר אוטומטית אם לא התקבלה תגובה.</p>
+            </div>
+            <div class="timeline-item">
+              <span>05</span>
+              <p>מעדכן CRM ומייצר דוח שבועי.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="chapter">
+          <span class="chapter-label">פרק 7</span>
+          <h3>מה עסקים מפספסים</h3>
+          <p>
+            רוב העסקים עדיין עובדים ככה: "איך עובדים עם AI?". אבל זו לא השאלה הנכונה.
+            השאלה הנכונה היא: איזה תהליך אפשר להפוך למערכת חכמה? ברגע ששואלים את
+            השאלה הזאת, מתחילים לראות איפה נוצרת יעילות אמיתית.
+          </p>
+        </section>
+
+        <section class="summary">
+          <h3>המעבר האמיתי הוא מ-AI ככלי ל-AI כתשתית עבודה</h3>
+          <p>
+            המעבר המשמעותי לא קורה רק בין GPT-4 ל-GPT-5. הוא קורה בין שימוש ב-AI ככלי
+            נקודתי לבין שימוש בו כמערכת שיודעת לנהל תהליך, לשמור קונטקסט ולייצר
+            תוצאה עסקית אמיתית.
+          </p>
+          <p>
+            זה בדיוק המקום שבו עסקים מתחילים לראות ROI אמיתי.
+          </p>
+          <p>
+            אם גם אצלך יש תהליך שחוזר על עצמו ואפשר להפוך אותו למערכת חכמה, אפשר
+            לקבוע איתי שיחת היכרות בחינם ולבחון יחד איך מתחילים.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0ppggGsyTUlEsBGauiMAHEbJ03BSY3Aseb-9B-J_g85v7uUPdTpGXkxPMwEuAtPF0JqB00ywre" target="_blank" rel="noreferrer">לקביעת שיחת היכרות בחינם</a>
+          </div>
+          <div class="copyright">כל הזכויות שמורות ל־ScaleUp 2026</div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
